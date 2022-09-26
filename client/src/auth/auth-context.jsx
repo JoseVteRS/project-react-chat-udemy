@@ -33,7 +33,9 @@ export const AuthProvider = ({ children }) => {
 
     return resp.ok;
   };
-  const register = ({ nombre, emai, password }) => {};
+  const register = (nombre, emai, password) => {
+    console.log(nombre, emai, password);
+  };
   const logout = () => {};
 
   const verifyToken = useCallback(() => {}, []);
