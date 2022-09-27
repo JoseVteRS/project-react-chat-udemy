@@ -1,19 +1,12 @@
 import React from "react";
 
-export const IncomingMessage = () => {
+export const IncomingMessage = ({ mensaje }) => {
   return (
-    <div className="incoming_msg">
-      <div className="incoming_msg_img">
-        <img
-          src="https://ptetutorials.com/images/user-profile.png"
-          alt="sunil"
-        />
-      </div>
-      <div className="received_msg">
-        <div className="received_withd_msg">
-          <p>Test which is a new approach to have all solutions</p>
-          <span className="time_date"> 11:01 AM | June 9</span>
-        </div>
+    <div className="outgoing_msg flex justify-start my-1">
+      <div className="sent_msg max-w-xl">
+        <p className="bg-pink-700 text-slate-200 p-3 rounded-xl">
+          {mensaje.mensaje}
+        </p>
       </div>
     </div>
   );

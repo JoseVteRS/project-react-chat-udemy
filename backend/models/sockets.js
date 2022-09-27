@@ -1,41 +1,60 @@
-
+const {
+  usuarioContectado,
+  usuarioDesconectado,
+  getUsuarios,
+  grabarMensaje,
+} = require("../controllers/sockets");
+const { comprobarJWT } = require("../helpers/jwt");
 
 class Sockets {
+  constructor(io) {
+    this.io = io;
 
-    constructor( io ) {
+    this.socketEvents();
+  }
 
-        this.io = io;
+  socketEvents() {
+    // On connection
+    this.io.on("connection", async (socket) => {
+      const [valido, uid] = comprobarJWT(socket.handshake.query["x-token"]);
 
-        this.socketEvents();
-    }
+      if (!valido) {
+        console.log("socket no identificado");
+        return socket.disconnect();
+      }
 
-    socketEvents() {
-        // On connection
-        this.io.on('connection', ( socket ) => {
+      await usuarioContectado(uid);
 
-            // TODO: Validar el JWT 
-            // Si el token no es válido, desconectar
+      // Unir al usuario a una sala de socket.io
+      socket.join(uid);
 
-            // TODO: Saber que usuario está activo mediante el UID
+      // TODO: Validar el JWT
+      // Si el token no es válido, desconectar
 
-            // TODO: Emitir todos los usuarios conectados
+      // TODO: Saber que usuario está activo mediante el UID
 
-            // TODO: Socket join, uid
+      // TODO: Emitir todos los usuarios conectados
+      this.io.emit("lista-usuarios", await getUsuarios());
 
-            // TODO: Escuchar cuando el cliente manda un mensaje
-            // mensaje-personal
+      // TODO: Socket join, uid
 
-            // TODO: Disconnect
-            // Marcar en la BD que el usuario se desconecto
-            // TODO: Emitir todos los usuarios conectados
+      // TODO: Escuchar cuando el cliente manda un mensaje
+      // mensaje-personal
+      socket.on("mensaje-personal", async (payload) => {
+        const mensaje = await grabarMensaje(payload);
+        this.io.to(payload.para).emit("mensaje-personal", mensaje);
+        this.io.to(payload.de).emit("mensaje-personal", mensaje);
+      });
 
-            
-        
-        });
-    }
-
-
+      // TODO: Disconnect
+      // Marcar en la BD que el usuario se desconecto
+      // TODO: Emitir todos los usuarios conectados
+      socket.on("disconnect", async () => {
+        await usuarioDesconectado(uid);
+        this.io.emit("lista-usuarios", await getUsuarios());
+      });
+    });
+  }
 }
-
 
 module.exports = Sockets;

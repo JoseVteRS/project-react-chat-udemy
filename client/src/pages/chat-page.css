@@ -1,4 +1,4 @@
-html,
+/* html,
 body {
   height: 100vh;
   margin: 0;
@@ -192,6 +192,9 @@ img {
 .type_msg {
   border-top: 1px solid #c4c4c4;
   position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .msg_send_btn {
@@ -233,4 +236,15 @@ textarea {
   right: 0;
   width: 60%;
   text-align: center;
+} */
+
+.triangle {
+  position: absolute;
+  margin-top: -2px;
+  margin-left: 35px;
+  border-left: 12px solid transparent;
+  border-right: 12px solid transparent;
+  border-bottom: 12px solid #312e81;
+  border-radius: 15%;
+  transform: rotate(311deg);
 }
